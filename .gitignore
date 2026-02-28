@@ -1,0 +1,27 @@
+# Secrets — never commit real environment files
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+.venv/
+app/venv/
+
+# Logs
+*.log
+
+# Temporary download dirs
+/tmp/
+
+# Cursor IDE
+.cursor/
