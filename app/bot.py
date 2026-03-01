@@ -16,6 +16,7 @@ async or offloaded to a thread pool executor.
 import asyncio
 import functools
 import logging
+import os
 import shutil
 import tempfile
 from typing import Callable
@@ -280,8 +281,6 @@ def _escape(text: str) -> str:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
-    logger.info("Starting TARS bot (polling mode)…")
-
     app = (
         Application.builder()
         .token(config.BOT_TOKEN)
@@ -299,11 +298,23 @@ def main() -> None:
         ", ".join(str(u) for u in config.ALLOWED_USERS),
     )
 
-    # run_polling blocks until the process receives SIGINT/SIGTERM
-    app.run_polling(
-        allowed_updates=Update.ALL_TYPES,
-        drop_pending_updates=True,  # skip messages sent while the bot was offline
-    )
+    if config.WEBHOOK_URL:
+        port = int(os.environ.get("PORT", 8080))
+        webhook_url = f"{config.WEBHOOK_URL.rstrip('/')}/{config.BOT_TOKEN}"
+        logger.info("Starting TARS bot (webhook mode) on port %d → %s", port, webhook_url)
+        app.run_webhook(
+            listen="0.0.0.0",
+            port=port,
+            webhook_url=webhook_url,
+            allowed_updates=Update.ALL_TYPES,
+            drop_pending_updates=True,
+        )
+    else:
+        logger.info("Starting TARS bot (polling mode — no WEBHOOK_URL set)…")
+        app.run_polling(
+            allowed_updates=Update.ALL_TYPES,
+            drop_pending_updates=True,
+        )
 
 
 if __name__ == "__main__":

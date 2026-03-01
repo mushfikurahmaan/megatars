@@ -41,6 +41,9 @@ R2_SECRET_KEY: str = _require("R2_SECRET_KEY")
 R2_BUCKET: str = _require("R2_BUCKET")
 R2_ENDPOINT: str = _require("R2_ENDPOINT")
 
+# Webhook (optional — set on Railway for webhook mode; unset for local polling)
+WEBHOOK_URL: str | None = os.environ.get("WEBHOOK_URL")  # e.g. https://megatars-production.up.railway.app
+
 # Download constraints
 MAX_FILE_SIZE_BYTES: int = 2 * 1024 ** 3  # 2 GB
 
