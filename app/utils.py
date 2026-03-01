@@ -18,6 +18,24 @@ _SUPPORTED_HOSTS: tuple[re.Pattern, ...] = (
 )
 
 
+# Regex to find http(s) URLs in plain text
+_URL_RE = re.compile(r"https?://[^\s<>\"')\]]+", re.IGNORECASE)
+
+
+def extract_first_url(text: str) -> str | None:
+    """
+    Extract the first valid (supported) URL from *text*.
+    Returns None if no valid URL is found.
+    """
+    if not text or not isinstance(text, str):
+        return None
+    for match in _URL_RE.finditer(text):
+        url = match.group(0).rstrip(".,;:!?)")
+        if is_valid_url(url):
+            return url
+    return None
+
+
 def is_valid_url(url: str) -> bool:
     """
     Return True only when *url* is an http/https link pointing to a
