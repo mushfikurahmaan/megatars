@@ -14,13 +14,14 @@ _SUPPORTED_HOSTS: tuple[re.Pattern, ...] = (
     re.compile(r"(www\.)?(youtube\.com|youtu\.be)", re.IGNORECASE),
     re.compile(r"(www\.)?(facebook\.com|fb\.watch|fb\.com)", re.IGNORECASE),
     re.compile(r"(www\.)?(instagram\.com)", re.IGNORECASE),
+    re.compile(r"(www\.)?(pinterest\.com|pin\.it)", re.IGNORECASE),
 )
 
 
 def is_valid_url(url: str) -> bool:
     """
     Return True only when *url* is an http/https link pointing to a
-    supported media host (YouTube or Facebook).
+    supported media host (YouTube, Facebook, Instagram, or Pinterest).
 
     This guards against command injection — we never pass arbitrary
     strings to the shell; even so, limiting accepted URLs is an
