@@ -174,8 +174,9 @@ async def download_video(url: str, tmp_dir: str) -> VideoResult:
 
     Format preference (in order):
       1. Best video (mp4) + best audio (m4a) merged by FFmpeg.
-      2. Any pre-merged best-quality mp4.
-      3. Absolute best available format (may require FFmpeg merge).
+      2. Best video + best audio in any container — FFmpeg remuxes to mp4.
+      3. Any pre-merged best-quality mp4.
+      4. Absolute best available format (covers single-stream platforms like Pinterest).
     """
     logger.info("Fetching metadata for video: %s", url)
     meta = await _fetch_metadata(url)
@@ -196,7 +197,7 @@ async def download_video(url: str, tmp_dir: str) -> VideoResult:
     await _run([
         "yt-dlp",
         "--no-playlist",
-        "--format", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+        "--format", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best",
         "--merge-output-format", "mp4",
         "--output", output_template,
         "--no-part",
