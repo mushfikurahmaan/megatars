@@ -42,7 +42,10 @@ R2_BUCKET: str = _require("R2_BUCKET")
 R2_ENDPOINT: str = _require("R2_ENDPOINT")
 
 # Webhook (optional — set on Railway for webhook mode; unset for local polling)
-WEBHOOK_URL: str | None = os.environ.get("WEBHOOK_URL")  # e.g. https://megatars-production.up.railway.app
+# Must be full HTTPS URL, e.g. https://megatars-production.up.railway.app
+WEBHOOK_URL: str | None = os.environ.get("WEBHOOK_URL")
+# Optional secret to validate incoming webhook requests (recommended)
+WEBHOOK_SECRET: str | None = os.environ.get("WEBHOOK_SECRET")
 
 # Download constraints
 MAX_FILE_SIZE_BYTES: int = 2 * 1024 ** 3  # 2 GB

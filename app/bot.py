@@ -300,12 +300,18 @@ def main() -> None:
 
     if config.WEBHOOK_URL:
         port = int(os.environ.get("PORT", 8080))
-        webhook_url = f"{config.WEBHOOK_URL.rstrip('/')}/{config.BOT_TOKEN}"
+        # Use root path — PTB listens on / by default; putting token in path causes
+        # path mismatch + colon-in-token can break routing. Use secret_token instead.
+        webhook_base = config.WEBHOOK_URL.rstrip("/")
+        if not webhook_base.startswith(("http://", "https://")):
+            webhook_base = f"https://{webhook_base}"
+        webhook_url = f"{webhook_base}/"
         logger.info("Starting TARS bot (webhook mode) on port %d → %s", port, webhook_url)
         app.run_webhook(
             listen="0.0.0.0",
             port=port,
             webhook_url=webhook_url,
+            secret_token=config.WEBHOOK_SECRET,
             allowed_updates=Update.ALL_TYPES,
             drop_pending_updates=True,
         )
